@@ -17,7 +17,7 @@ import Button from '../../components/Button';
 
 import { Container, Title, BackButton, UserAvatarButton, UserAvatar  } from './styles';
 import { useAuth } from '../../hooks/auth';
-
+import ImagePicker from 'react-native-image-picker';
 
 
 interface ProfileFormData {
@@ -97,6 +97,43 @@ const Profile: React.FC = () => {
         
     }, [navigation]);
 
+    
+    const handleUpdateAvatar = useCallback(() => {
+        
+        ImagePicker.showImagePicker({
+        
+            title: 'Selecione um Avatar',
+            cancelButtonTitle: 'Cancelar',
+            takePhotoButtonTitle: 'Usar câmera',
+            chooseFromLibraryButtonTitle: 'Escolher da galeria'
+        
+        }, (response) => {
+            
+            if (response.didCancel) {
+                return;
+            } 
+            
+            if (response.error) {
+                Alert.alert('Erro ao atualizar o seu avatar!');
+                return;
+            } 
+            
+            const data = new FormData();
+
+            data.append('avatar', {
+                type: 'iamge/jpg',
+                name: `${user.id}.jpg`,
+                uri: response.uri,
+            });
+            // You can also display the image using data:
+            // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+            api.patch('users/avatar', data).then(apiResponse => {
+               updateUser(apiResponse.data); 
+            });
+        },);
+    }, [updateUser, user.id]);
+
     return (
         <>
             <KeyboardAvoidingView 
@@ -112,7 +149,7 @@ const Profile: React.FC = () => {
                     
                     
 
-                    <UserAvatarButton onPress={() => {}}>
+                    <UserAvatarButton onPress={handleUpdateAvatar}>
                         <UserAvatar source={{ uri: user.avatar_url}}></UserAvatar>
                     </UserAvatarButton>
 
