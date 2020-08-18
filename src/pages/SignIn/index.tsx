@@ -27,6 +27,7 @@ const SignIn: React.FC = () => {
     
     const formRef = useRef<FormHandles>(null);
     const passwordInputRef = useRef<TextInput>(null);
+    
     const navigation = useNavigation();
 
     const { signIn, user } = useAuth();
@@ -94,7 +95,7 @@ const SignIn: React.FC = () => {
                                 keyboardType="email-address" 
                                 name="email" 
                                 icon="mail" 
-                                placeholder="Email"
+                                placeholder="E-mail"
                                 returnKeyType="next"
                                 onSubmitEditing={() => {
                                     passwordInputRef.current?.focus();
